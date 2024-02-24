@@ -1,32 +1,33 @@
 # Page: DOMContentLoaded, load, beforeunload, unload
 
-The lifecycle of an HTML page has three important events:
+چرخه زندگی (lifecycle) یک صفحه HTML سه رویداد اصلی را شامل می‌شود:
 
-- `DOMContentLoaded` -- the browser fully loaded HTML, and the DOM tree is built, but external resources like pictures `<img>` and stylesheets may not yet have loaded.
-- `load` -- not only HTML is loaded, but also all the external resources: images, styles etc.
-- `beforeunload/unload` -- the user is leaving the page.
+- `DOMContentLoaded` -- مرورگر به صورت کامل لود شده و درخت DOM ساخته شده ولی منابع خارجی مانند تصاویر `<img>` و استایل شیت‌ها ممکن است در این مرحله هنوز لود نشده باشند.
+- `load` -- نه تنها HTML لود شده بلکه همه‌ی منابع خارجی مانند تصاویر و استایل‌ها هم لود شده اند.
+- `beforeunload/unload` -- یوزر صفحه را ترک میکند.
 
-Each event may be useful:
+هر یک از این رویدادها میتوانند کاربردی باشند:
 
-- `DOMContentLoaded` event -- DOM is ready, so the handler can lookup DOM nodes, initialize the interface.
+- رویداد `DOMContentLoaded` -- درخت DOM آماده است پس هندلر میتواند در نودهای DOM جستجو کرده و اینترفیس را بسازند.
 - `load` event -- external resources are loaded, so styles are applied, image sizes are known etc.
-- `beforeunload` event -- the user is leaving: we can check if the user saved the changes and ask them whether they really want to leave.
-- `unload` -- the user almost left, but we still can initiate some operations, such as sending out statistics.
+- رویداد `load` -- منابع خارجی بارگذاری شده اند بنابراین استایلها اعمال شده و اندازه تصاویر را میتوان به دست آورد و مواردی مثل آن.
+- رویداد `beforeunload` -- کاربر درحال خروج است: میتوانیم بررسی کنیم که آیا یوزر تغییرات را ذخیره کرده و از آنها بپرسیم که آیا واقعا قصد خروج از صفحه را دارند؟
+- `unload` -- کاربر تقریبا از صفحه خارج شده اما ما هنوز میتوانیم بعضی از عملیات‌ها مانند فرستادن آمار به بیرون را انجام دهیم.
 
-Let's explore the details of these events.
+بیاید جزئیات این رویدادهارا بررسی کنیم.
 
 ## DOMContentLoaded
 
-The `DOMContentLoaded` event happens on the `document` object.
+رویداد `DOMContentLoaded` برروی آبجکت `document` اتفاق می‌افتد.
 
-We must use `addEventListener` to catch it:
+ما باید از `addEventListener` برای گرفتن آن استفاده کنیم:
 
 ```js
 document.addEventListener("DOMContentLoaded", ready);
 // not "document.onDOMContentLoaded = ..."
 ```
 
-For instance:
+برای مثال:
 
 ```html run height=200 refresh
 <script>
@@ -45,17 +46,17 @@ For instance:
 <img id="img" src="https://en.js.cx/clipart/train.gif?speed=1&cache=0">
 ```
 
-In the example, the `DOMContentLoaded` handler runs when the document is loaded, so it can see all the elements, including `<img>` below.
+در این مثال هندلر `DOMContentLoaded` زمانی که داکیومنت لود شده باشد اجرا میشود و بنابراین می‌تواند همه‌ی المان‌ها شامل `<img>` را ببیند.
 
-But it doesn't wait for the image to load. So `alert` shows zero sizes.
+اما این رویداد منتظر لود شدن عکس نمیشود پس `alert` اندازه صفر را نمایش می‌دهد.
 
-At first sight, the `DOMContentLoaded` event is very simple. The DOM tree is ready -- here's the event. There are few peculiarities though.
+در نگاه اول رویداد `DOMContentLoaded` خیلی ساده به نظر میرسد. درخت DOM آماده است. با این وجود موارد عجیبی وجود دارند.
 
 ### DOMContentLoaded and scripts
 
-When the browser processes an HTML-document and comes across a `<script>` tag, it needs to execute before continuing building the DOM. That's a precaution, as scripts may want to modify DOM, and even `document.write` into it, so `DOMContentLoaded` has to wait.
+زمانی که مرورگر یک اچ‌تی‌ام‌ال داکیومنت را پردازش میکند و در حین انجام این کار به تگ `<script>` برمیخورد این تگ نیاز دارد پیش از ساختن DOM آنرا اجرا کند. اینجا باید احتیاط به خرج داد چون اسکریپت‌ها ممکن است بخواهند تا DOM را تغییر دهند و حتی `document.write` را برروی آن اعمال کنند پس `DOMContentLoaded` باید صبرکند.
 
-So DOMContentLoaded definitely happens after such scripts:
+بنابراین DOMContentLoaded قطعا پس از چنین اسکریپتی اتفاق می‌افتد:
 
 ```html run
 <script>
@@ -71,11 +72,11 @@ So DOMContentLoaded definitely happens after such scripts:
 </script>
 ```
 
-In the example above, we first see "Library loaded...", and then "DOM ready!" (all scripts are executed).
+در مثال بالا ما ابتدا "Library loaded..." را میبینیم و پس از آن "DOM ready!" (همه‌ی اسکریپت‌ها اجرا شده‌اند).
 
 ```warn header="Scripts that don't block DOMContentLoaded"
-There are two exceptions from this rule:
-1. Scripts with the `async` attribute, that we'll cover [a bit later](info:script-async-defer), don't block `DOMContentLoaded`.
+دو استثنا برای این قانون وجود داند:
+1. اسکریپت‌های دارای اتریبیوت `async` که [کمی بعد](info:script-async-defer) آن را بررسی میکنیم، رویداد `DOMContentLoaded` را بلاک نمیکنند.
 2. Scripts that are generated dynamically with `document.createElement('script')` and then added to the webpage also don't block this event.
 ```
 
