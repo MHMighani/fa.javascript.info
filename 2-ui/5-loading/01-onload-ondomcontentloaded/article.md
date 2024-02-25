@@ -132,15 +132,15 @@ document.addEventListener("DOMContentLoaded", ready);
 
 یک مثال قابل توجه فرستادن آمار است.
 
-Let's say we gather data about how the page is used: mouse clicks, scrolls, viewed page areas, and so on.
+تصور کنید که میخواهیم راجع به اینکه صفحه چطور استفاده شده اطلاعات جمع‌آوری کنیم: مواردی مثل کلیک‌های ماوس، اسکرول‌ها، بخش‌هایی از صفحه که مشاهده شده‌اند و مانند آن.
 
-Naturally, `unload` event is when the user leaves us, and we'd like to save the data on our server.
+طبیعتا رویداد `unload` زمانی رخ میدهد که کاربر صفحه‌ی ما را ترک میکند و ما میخواهیم تا اطلاعات جمع‌آوری شده را روی سرورهای خودمون ذخیره کنیم.
 
-There exists a special `navigator.sendBeacon(url, data)` method for such needs, described in the specification <https://w3c.github.io/beacon/>.
+یک متد خاص به نام `navigator.sendBeacon(url, data)` برای برطرف کردن چنین نیازهایی وجود دارد که در بخش <https://w3c.github.io/beacon/> توضیح داده شده است.
 
-It sends the data in background. The transition to another page is not delayed: the browser leaves the page, but still performs `sendBeacon`.
+این متد اطلاعات را در پس‌زمینه ارسال میکند. با این متد فرآیند تغییر صفحه به تعویق نخواهد افتاد و مرورگر صفحه را ترک خواهد کرد اما همچنان `sendBeacon` را اجرا میکند.
 
-Here's how to use it:
+به این شکل میتوانیم از این متد استفاده کنیم:
 ```js
 let analyticsData = { /* object with gathered data */ };
 
@@ -149,16 +149,15 @@ window.addEventListener("unload", function() {
 });
 ```
 
-- The request is sent as POST.
-- We can send not only a string, but also forms and other formats, as described in the chapter <info:fetch>, but usually it's a stringified object.
-- The data is limited by 64kb.
+- ریکوئست به شکل POST ارسال میشود.
+- ما میتوانیم تنها یک رشته یا دیگر فرمت‌ها را به شکلی که در فصل <info:fetch> بیان شده است ارسال کنیم اما معمولا به شکل یک آبجکت که به رشته تبدیل شده ارسال خواهد شد.
+- دیتای قابل ارسال دارای محدودیت حجمی 64 کیلوبایت میباشد.
 
-When the `sendBeacon` request is finished, the browser probably has already left the document, so there's no way to get server response (which is usually empty for analytics).
+ممکن است مرورگر پیش از به پایان رسیدن درخواست `sendBeacon` صفحه را ترک کرده باشد پس راهی برای دریافت پاسخ سرور وجود ندارد (که معمولا برای اطلاعات آماری خالی است.)
 
-There's also a `keepalive` flag for doing such "after-page-left" requests in  [fetch](info:fetch) method for generic network requests. You can find more information in the chapter <info:fetch-api>.
+همچنین یک فلگ `keepalive` برای انجام ریکوئست‌هایی مانند "after-page-left" در متد [fetch](info:fetch) وجود دارد. میتوانیم اطلاعات بیشتری در اینباره در فصل <info:fetch-api> به دست آوریم.
 
-
-If we want to cancel the transition to another page, we can't do it here. But we can use another event -- `onbeforeunload`.
+اگر بخواهیم تغییر صفحه را لغو کنیم نمیتوانیم آنرا اینجا انجام دهیم. اما میتوانیم از رویداد دیگری استفاده کنیم: `onbeforeunload`
 
 ## window.onbeforeunload [#window.onbeforeunload]
 
