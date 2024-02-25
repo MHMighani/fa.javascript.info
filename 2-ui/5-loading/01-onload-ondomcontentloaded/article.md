@@ -77,14 +77,14 @@ document.addEventListener("DOMContentLoaded", ready);
 ```warn header="Scripts that don't block DOMContentLoaded"
 دو استثنا برای این قانون وجود داند:
 1. اسکریپت‌های دارای اتریبیوت `async` که [کمی بعد](info:script-async-defer) آن را بررسی میکنیم، رویداد `DOMContentLoaded` را بلاک نمیکنند.
-2. Scripts that are generated dynamically with `document.createElement('script')` and then added to the webpage also don't block this event.
+2. اسکریپت‌هایی که به شکل پویا توسط `document.createElement('script')` ساخته میشوند و سپس به صفحه وب اضافه میشوند هم این رویداد را بلاک نمیکنند.
 ```
 
 ### DOMContentLoaded and styles
 
-External style sheets don't affect DOM, so `DOMContentLoaded` does not wait for them.
+استایل شیت‌های خارجی هم روی DOM اثری نمیگذارند بنابراین `DOMContentLoaded` روی آنها تاثیری نمیگذارد.
 
-But there's a pitfall. If we have a script after the style, then that script must wait until the stylesheet loads:
+اما اینجا نکته‌ای هست که باید به آن توجه کرد، اگر ما اسکریپتی بعد از استایل داشته باشیم آنگاه آن اسکریپت تا لود شدن استایل باید صبر کند.
 
 ```html run
 <link type="text/css" rel="stylesheet" href="style.css">
@@ -94,24 +94,24 @@ But there's a pitfall. If we have a script after the style, then that script mus
 </script>
 ```
 
-The reason for this is that the script may want to get coordinates and other style-dependent properties of elements, like in the example above. Naturally, it has to wait for styles to load.
+این اتفاق به این علت می‌افتد که اسکریپت ممکن است که بخواهد مختصات و دیگر پراپرتی‌های وابسته به استایل المان را بخواند درست مانند مثال بالا. طبیعتا برای این کار باید منتظر لود شدن استایلها باقی بماند.
 
-As `DOMContentLoaded` waits for scripts, it now waits for styles before them as well.
+بنابراین از آنجا که `DOMContentLoaded` منتظر لود شدن اسکریپت‌ها میماند پس حالا باید منتظر لود شدن استایل‌ها هم بماند.
 
 ### Built-in browser autofill
 
-Firefox, Chrome and Opera autofill forms on `DOMContentLoaded`.
+مروگرهای فایرفاکس، کروم و اپرا فرم‌هارا هنگام `DOMContentLoaded` پر میکنند.
 
-For instance, if the page has a form with login and password, and the browser remembered the values, then on `DOMContentLoaded` it may try to autofill them (if approved by the user).
+برای مثال اگر صفحه یک فرم با فیلدهای لاگین و پسورد داشته باشد و مرورگر این مقادیر را به خاطر سپرده باشد آنگاه هنگام رویداد `DOMContentLoaded` ممکن است بخواهد این فیلدهارا به صورت خودکار پر کند (اگر که توسط کاربر تایید شده باشد).
 
-So if `DOMContentLoaded` is postponed by long-loading scripts, then autofill also awaits. You probably saw that on some sites (if you use browser autofill) -- the login/password fields don't get autofilled immediately, but there's a delay till the page fully loads. That's actually the delay until the `DOMContentLoaded` event.
+بنابراین اگر `DOMContentLoaded` توسط اسکریپت‌هایی با زمان لود بالا به تعویق افتاده باشد انگاه فرآیند پرکردن خودکار فیلدها هم به تعویق خواهد افتاد. احتمالا شما هم این رخداد را در بعضی از سایت‌ها دیده باشید (البته اگر از فرآیند پر کردن خودکار فرمها استفاده میکنید.) -- فیلدهای لاگین/پسورد بلافاصله و تا زمانی که صفحه کامل لود شود پر نخواهند شد. این تاخیر درواقع به اندازه رخ دادن `DOMContentLoaded` طول خواهد کشید.
 
 
 ## window.onload [#window-onload]
 
-The `load` event on the `window` object triggers when the whole page is loaded including styles, images and other resources. This event is available via the `onload` property.
+رویداد `load` برروی آبجکت `window` زمانی اتفاق خواهد افتاد که کل صفحه شامل استایل‌ها, تصاویر و دیگر منابع لود شده باشد. این رویداد با پراپرتی `onload` قابل دسترسی است.
 
-The example below correctly shows image sizes, because `window.onload` waits for all images:
+مثال زیر به درستی اندازه تصاویر را نشان میدهد چون `window.onload` تا لود شدن همه‌ی تصاویر صبر کرده و بعد اجرا میشود.
 
 ```html run height=200 refresh
 <script>
@@ -128,9 +128,9 @@ The example below correctly shows image sizes, because `window.onload` waits for
 
 ## window.onunload
 
-When a visitor leaves the page, the `unload` event triggers on `window`. We can do something there that doesn't involve a delay, like closing related popup windows.
+زمانی که یک بازدیدکننده صفحه را ترک میکند، رویداد `unload` بر روی `window` اجرا میشود. در این رویداد میتوانیم کارهایی که تاخیر ندارند مانند بستن پنجره‌های پاپ‌آپ مرتبط را انجام دهیم.
 
-The notable exception is sending analytics.
+یک مثال قابل توجه فرستادن آمار است.
 
 Let's say we gather data about how the page is used: mouse clicks, scrolls, viewed page areas, and so on.
 
