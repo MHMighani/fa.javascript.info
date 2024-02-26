@@ -240,19 +240,18 @@ if (document.readyState == 'loading') {
 همچنین رویدادی به نام `readystatechange` هم وجود دارد  که در هنگام تغییر وضعیت اتفاق می‌افتد. بنابراین ما میتوانیم همه‌ی وضعیت‌ها را به اینصورت نمایش دهیم.
 
 ```js run
-// current state
+// وضعیت کنونی
 console.log(document.readyState);
 
-// print state changes
+// چاپ تغییرات وضعیت
 document.addEventListener('readystatechange', () => console.log(document.readyState));
 ```
 
-The `readystatechange` event is an alternative mechanics of tracking the document loading state, it appeared long ago. Nowadays, it is rarely used.
+رویداد `readystatechange` جایگزینی برای ردگیری وضعیت بارگذاری میباشد. این رویداد مدت‌ها پیش به وجود آمد. اینروزها خیلی به ندرت استفاده می‌شود.
 
-Let's see the full events flow for the completeness.
+بیاید تا برای جمع بندی فلوی کلی رویدادها را ببینیم.
 
-Here's a document with `<iframe>`, `<img>` and handlers that log events:
-
+اینجا داکیومنتی با تگ‌های `<iframe>`, `<img>` و هندلرهایی برای چاپ رویدادها داریم:
 ```html
 <script>
   log('initial readyState:' + document.readyState);
@@ -271,9 +270,9 @@ Here's a document with `<iframe>`, `<img>` and handlers that log events:
 </script>
 ```
 
-The working example is [in the sandbox](sandbox:readystate).
+مثال عملی آن [در سندباکس](sandbox:readystate) وجود دارد.
 
-The typical output:
+خروجی معمول:
 1. [1] initial readyState:loading
 2. [2] readyState:interactive
 3. [2] DOMContentLoaded
@@ -288,7 +287,7 @@ The numbers in square brackets denote the approximate time of when it happens. E
 - `document.readyState` becomes `complete` when all resources (`iframe` and `img`) are loaded. Here we can see that it happens in about the same time as `img.onload` (`img` is the last resource) and `window.onload`. Switching to `complete` state means the same as `window.onload`. The difference is that `window.onload` always works after all other `load` handlers.
 
 
-## Summary
+## خلاصه
 
 Page load events:
 
