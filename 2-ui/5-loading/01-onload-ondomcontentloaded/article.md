@@ -161,11 +161,11 @@ window.addEventListener("unload", function() {
 
 ## window.onbeforeunload [#window.onbeforeunload]
 
-If a visitor initiated navigation away from the page or tries to close the window, the `beforeunload` handler asks for additional confirmation.
+اگر بازدید کننده فرآیند خروج از صفحه را آغاز کند یا تلاش کند تا پنجره را ببند، هندلر رویداد `beforeunload` درخواست تایید خواهد کرد.
 
-If we cancel the event, the browser may ask the visitor if they are sure.
+اگر رویداد را لغو کنیم آنگاه مرورگر از بازدیدکننده خواهد پرسید که آیا مطمئن هستند.
 
-You can try it by running this code and then reloading the page:
+میتوانید با اجرای این کد و سپس بارگذاری دوباره‌ی صفحه آنرا امتحان کنید:
 
 ```js run
 window.onbeforeunload = function() {
@@ -173,9 +173,9 @@ window.onbeforeunload = function() {
 };
 ```
 
-For historical reasons, returning a non-empty string also counts as canceling the event. Some time ago browsers used to show it as a message, but as the [modern specification](https://html.spec.whatwg.org/#unloading-documents) says, they shouldn't.
+بنابر دلایل تاریخی ارسال یک رشته غیرخالی هم به عنوان یک لغو کننده رویداد به حساب می‌آید. در گذشته مرورگرها از آن برای نمایش یک پیام استفاده میکردند اما طبق [آیین نامه مرورگرهای جدید](https://html.spec.whatwg.org/#unloading-documents) دیگر نباید اینکار انجام شود.
 
-Here's an example:
+مثال:
 
 ```js run
 window.onbeforeunload = function() {
@@ -183,12 +183,12 @@ window.onbeforeunload = function() {
 };
 ```
 
-The behavior was changed, because some webmasters abused this event handler by showing misleading and annoying messages. So right now old browsers still may show it as a message, but aside of that -- there's no way to customize the message shown to the user.
+از آنجا که بعضی از وب‌مسترها از این ایونت هندلر برای نمایش پیام‌های آزاردهنده استفاده کردند این رفتار تغییر کرد. بنابراین مروگرهای قدیمی ممکن است که هنوز آنرا تحت یک پیام نمایش دهند اما اگر آنرا کنار بگذاریم راهی وجود ندارد که پیام نمایش داده شده به کاربر را شخصی سازی کنیم.
 
 ````warn header="The `event.preventDefault()` doesn't work from a `beforeunload` handler"
-That may sound weird, but most browsers ignore `event.preventDefault()`.
+ممکن است عجیب به نظر برسد ولی اغلب مرورگرها `event.preventDefault()` را نادیده میگیرند.
 
-Which means, following code may not work:
+که به معنی آن است که کد زیر ممکن است عمل نکند:
 ```js run
 window.addEventListener("beforeunload", (event) => {
   // doesn't work, so this event handler doesn't do anything
@@ -196,7 +196,7 @@ window.addEventListener("beforeunload", (event) => {
 });
 ```
 
-Instead, in such handlers one should set `event.returnValue` to a string to get the result similar to the code above:
+به عنوان جایگزین در این هندلرها میتوان با جایگذاری `event.returnValue` به یک رشته نتیجه‌ای مشابه کد بالا بدست آورد:
 ```js run
 window.addEventListener("beforeunload", (event) => {
   // works, same as returning from window.onbeforeunload
@@ -207,23 +207,23 @@ window.addEventListener("beforeunload", (event) => {
 
 ## readyState
 
-What happens if we set the `DOMContentLoaded` handler after the document is loaded?
+چه اتفاقی می‌افتد اگر ما هندلر `DOMContentLoaded` را پس از لود شدن داکیومنت ست کنیم؟
 
-Naturally, it never runs.
+طبیعتا هرگز اجرا نخواهد شد.
 
-There are cases when we are not sure whether the document is ready or not. We'd like our function to execute when the DOM is loaded, be it now or later.
+در شرایطی ممکن است که ما از اینکه آیا داکیومنت آماده است یا نه اطمینان نداشته باشیم. ما میخواهیم تا فانکشن ما پس از بارگذاری DOM اجرا شود خواه حالا باشد یا بعدا.
 
-The `document.readyState` property tells us about the current loading state.
+پراپرتی `document.readyState` به ما راجع به ما راجع به وضعیت بارگذاری DOM اطلاعات میدهد.
 
-There are 3 possible values:
+سه مقدار ممکن است برگردد:
 
-- `"loading"` -- the document is loading.
-- `"interactive"` -- the document was fully read.
-- `"complete"` -- the document was fully read and all resources (like images) are loaded too.
+- `"loading"` -- داکیومنت در حال بارگذاری است..
+- `"interactive"` -- داکیومنت کاملا خوانده شده است.
+- `"complete"` -- داکیومنت شکل کامل خوانده شده و همه‌ی منابع (مانند تصاویر) هم بارگذاری شده‌اند.
 
-So we can check `document.readyState` and setup a handler or execute the code immediately if it's ready.
+بنابراین ما میتوانیم `document.readyState` را بررسی کرده و یک هندلر را برای آن مشخص کنیم یا اینکه کد را بلافاصله پس از اینکه آماده شد اجرا کنیم.
 
-Like this:
+به اینصورت:
 
 ```js
 function work() { /*...*/ }
@@ -237,7 +237,7 @@ if (document.readyState == 'loading') {
 }
 ```
 
-There's also the `readystatechange` event that triggers when the state changes, so we can print all these states like this:
+همچنین رویدادی به نام `readystatechange` هم وجود دارد  که در هنگام تغییر وضعیت اتفاق می‌افتد. بنابراین ما میتوانیم همه‌ی وضعیت‌ها را به اینصورت نمایش دهیم.
 
 ```js run
 // current state
