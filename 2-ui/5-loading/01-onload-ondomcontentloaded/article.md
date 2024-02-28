@@ -281,7 +281,7 @@ document.addEventListener('readystatechange', () => console.log(document.readySt
 6. [4] readyState:complete
 7. [4] window onload
 
-The numbers in square brackets denote the approximate time of when it happens. Events labeled with the same digit happen approximately at the same time (+- a few ms).
+شماره‌های داخل براکت نشان‌دهنده زمان تقریبی اتفاق افتادن آن هستند. رویدادهایی که با ارقام مشابه تقریبا همزمان اتفاق می‌افتند (+- میلی ثانیه).
 
 - `document.readyState` becomes `interactive` right before `DOMContentLoaded`. These two things actually mean the same.
 - `document.readyState` becomes `complete` when all resources (`iframe` and `img`) are loaded. Here we can see that it happens in about the same time as `img.onload` (`img` is the last resource) and `window.onload`. Switching to `complete` state means the same as `window.onload`. The difference is that `window.onload` always works after all other `load` handlers.
@@ -289,13 +289,13 @@ The numbers in square brackets denote the approximate time of when it happens. E
 
 ## خلاصه
 
-Page load events:
+رویدادهای بارگذاری صفحه:
 
-- The `DOMContentLoaded` event triggers on `document` when the DOM is ready. We can apply JavaScript to elements at this stage.
-  - Script such as `<script>...</script>` or `<script src="..."></script>` block DOMContentLoaded, the browser waits for them to execute.
-  - Images and other resources may also still continue loading.
-- The `load` event on `window` triggers when the page and all resources are loaded. We rarely use it, because there's usually no need to wait for so long.
-- The `beforeunload` event on `window` triggers when the user wants to leave the page. If we cancel the event, browser asks whether the user really wants to leave (e.g we have unsaved changes).
+- رویداد `DOMContentLoaded` برروی زمانی که DOM آماده باشد اجرا میشود. ما میتوانیم جاوااسکریپت را در این حالت به المان‌ها اپلای کنیم.
+  - تگ‌های اسکریپت همانند `<script>...</script>` یا `<script src="..."></script>` رویداد DOMContentLoaded را بلاک میکنند و مرورگر برای اجرای آنها صبر میکند.
+  - تصاویر و دیگر منابع هم ممکن است همچنان درحال لود باشند
+- رویداد `load` زمانی که صفحه و همه‌ی منابع لود شده باشند اجرا میشود. ما به ندرت از این ایونت استفاده میکنیم چون معمولا نیازی به اینکه مدتی طولانی منتظر بمانیم نیست.
+- رویداد `beforeunload` زمانی برروی `window` اجرا میشود که کاربر بخواهد صفحه را ترک کند. اگر ما رویداد را لغو کنیم مرورگر از یوزر میپرسد که آیا واقعا قصد خروج دارد یا نه (برای مثال زمانی که ما تغییرات ذخیره نشده داریم).
 - The `unload` event on `window` triggers when the user is finally leaving, in the handler we can only do simple things that do not involve delays or asking a user. Because of that limitation, it's rarely used. We can send out a network request with `navigator.sendBeacon`.
 - `document.readyState` is the current state of the document, changes can be tracked in the `readystatechange` event:
   - `loading` -- the document is loading.
