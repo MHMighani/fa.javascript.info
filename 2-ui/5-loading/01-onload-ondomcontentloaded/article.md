@@ -9,7 +9,6 @@
 هر یک از این رویدادها میتوانند کاربردی باشند:
 
 - رویداد `DOMContentLoaded` -- درخت DOM آماده است پس هندلر میتواند در نودهای DOM جستجو کرده و اینترفیس را بسازند.
-- `load` event -- external resources are loaded, so styles are applied, image sizes are known etc.
 - رویداد `load` -- منابع خارجی بارگذاری شده اند بنابراین استایلها اعمال شده و اندازه تصاویر را میتوان به دست آورد و مواردی مثل آن.
 - رویداد `beforeunload` -- کاربر درحال خروج است: میتوانیم بررسی کنیم که آیا یوزر تغییرات را ذخیره کرده و از آنها بپرسیم که آیا واقعا قصد خروج از صفحه را دارند؟
 - `unload` -- کاربر تقریبا از صفحه خارج شده اما ما هنوز میتوانیم بعضی از عملیات‌ها مانند فرستادن آمار به بیرون را انجام دهیم.
@@ -24,7 +23,7 @@
 
 ```js
 document.addEventListener("DOMContentLoaded", ready);
-// not "document.onDOMContentLoaded = ..."
+// "document.onDOMContentLoaded = ..." نیست
 ```
 
 برای مثال:
@@ -34,7 +33,7 @@ document.addEventListener("DOMContentLoaded", ready);
   function ready() {
     alert('DOM is ready');
 
-    // image is not yet loaded (unless it was cached), so the size is 0x0
+    // تصویر هنوز لود نشده (مگر آنکه کش شده باشد) پس سایز آن 0x0 است
     alert(`Image size: ${img.offsetWidth}x${img.offsetHeight}`);
   }
 
@@ -52,7 +51,7 @@ document.addEventListener("DOMContentLoaded", ready);
 
 در نگاه اول رویداد `DOMContentLoaded` خیلی ساده به نظر میرسد. درخت DOM آماده است. با این وجود موارد عجیبی وجود دارند.
 
-### DOMContentLoaded and scripts
+### رویداد DOMContentLoaded و اسکریپت‌ها
 
 زمانی که مرورگر یک اچ‌تی‌ام‌ال داکیومنت را پردازش میکند و در حین انجام این کار به تگ `<script>` برمیخورد این تگ نیاز دارد پیش از ساختن DOM آنرا اجرا کند. اینجا باید احتیاط به خرج داد چون اسکریپت‌ها ممکن است بخواهند تا DOM را تغییر دهند و حتی `document.write` را برروی آن اعمال کنند پس `DOMContentLoaded` باید صبرکند.
 
@@ -74,13 +73,13 @@ document.addEventListener("DOMContentLoaded", ready);
 
 در مثال بالا ما ابتدا "Library loaded..." را میبینیم و پس از آن "DOM ready!" (همه‌ی اسکریپت‌ها اجرا شده‌اند).
 
-```warn header="Scripts that don't block DOMContentLoaded"
+```warn header="اسکریپت‌هایی که DOMContentLoaded را بلاک نمیکنند."
 دو استثنا برای این قانون وجود داند:
 1. اسکریپت‌های دارای اتریبیوت `async` که [کمی بعد](info:script-async-defer) آن را بررسی میکنیم، رویداد `DOMContentLoaded` را بلاک نمیکنند.
 2. اسکریپت‌هایی که به شکل پویا توسط `document.createElement('script')` ساخته میشوند و سپس به صفحه وب اضافه میشوند هم این رویداد را بلاک نمیکنند.
 ```
 
-### DOMContentLoaded and styles
+### رویداد DOMContentLoaded و استایلها
 
 استایل شیت‌های خارجی هم روی DOM اثری نمیگذارند بنابراین `DOMContentLoaded` روی آنها تاثیری نمیگذارد.
 
@@ -89,7 +88,7 @@ document.addEventListener("DOMContentLoaded", ready);
 ```html run
 <link type="text/css" rel="stylesheet" href="style.css">
 <script>
-  // the script doesn't execute until the stylesheet is loaded
+  // اسکریپت تا پیش از لود شدن استایل‌شیت اجرا نمیشود
   alert(getComputedStyle(document.body).marginTop);
 </script>
 ```
@@ -98,7 +97,7 @@ document.addEventListener("DOMContentLoaded", ready);
 
 بنابراین از آنجا که `DOMContentLoaded` منتظر لود شدن اسکریپت‌ها میماند پس حالا باید منتظر لود شدن استایل‌ها هم بماند.
 
-### Built-in browser autofill
+### پرکردن خودکار در مرورگر 
 
 مروگرهای فایرفاکس، کروم و اپرا فرم‌هارا هنگام `DOMContentLoaded` پر میکنند.
 
@@ -115,10 +114,10 @@ document.addEventListener("DOMContentLoaded", ready);
 
 ```html run height=200 refresh
 <script>
-  window.onload = function() { // can also use window.addEventListener('load', (event) => {
+  window.onload = function() { // همچین میتوان از window.addEventListener('load',(event) => {) استفاده کرد
     alert('Page loaded');
 
-    // image is loaded at this time
+    // تصویر در این لحظه لود شده است
     alert(`Image size: ${img.offsetWidth}x${img.offsetHeight}`);
   };
 </script>
@@ -142,7 +141,7 @@ document.addEventListener("DOMContentLoaded", ready);
 
 به این شکل میتوانیم از این متد استفاده کنیم:
 ```js
-let analyticsData = { /* object with gathered data */ };
+let analyticsData = { /* آبجکت با دیتای جمع‌آوری شده */ };
 
 window.addEventListener("unload", function() {
   navigator.sendBeacon("/analytics", JSON.stringify(analyticsData));
@@ -191,7 +190,7 @@ window.onbeforeunload = function() {
 که به معنی آن است که کد زیر ممکن است عمل نکند:
 ```js run
 window.addEventListener("beforeunload", (event) => {
-  // doesn't work, so this event handler doesn't do anything
+  // کار نمیکند. بنابراین هندلر کاری انجام نمیدهد
 	event.preventDefault();
 });
 ```
@@ -199,7 +198,7 @@ window.addEventListener("beforeunload", (event) => {
 به عنوان جایگزین در این هندلرها میتوان با جایگذاری `event.returnValue` به یک رشته نتیجه‌ای مشابه کد بالا بدست آورد:
 ```js run
 window.addEventListener("beforeunload", (event) => {
-  // works, same as returning from window.onbeforeunload
+  // مشابه با برگرداندن از window.onbeforeunload کار میکند
 	event.returnValue = "There are unsaved changes. Leave now?";
 });
 ```
@@ -229,10 +228,10 @@ window.addEventListener("beforeunload", (event) => {
 function work() { /*...*/ }
 
 if (document.readyState == 'loading') {
-  // still loading, wait for the event
+  // هنوز درحال لود شدن است، برای رویداد صبر کنید
   document.addEventListener('DOMContentLoaded', work);
 } else {
-  // DOM is ready!
+  // DOM آماده است!
   work();
 }
 ```
@@ -283,8 +282,8 @@ document.addEventListener('readystatechange', () => console.log(document.readySt
 
 شماره‌های داخل براکت نشان‌دهنده زمان تقریبی اتفاق افتادن آن هستند. رویدادهایی که با ارقام مشابه تقریبا همزمان اتفاق می‌افتند (+- میلی ثانیه).
 
-- `document.readyState` becomes `interactive` right before `DOMContentLoaded`. These two things actually mean the same.
-- `document.readyState` becomes `complete` when all resources (`iframe` and `img`) are loaded. Here we can see that it happens in about the same time as `img.onload` (`img` is the last resource) and `window.onload`. Switching to `complete` state means the same as `window.onload`. The difference is that `window.onload` always works after all other `load` handlers.
+- رویداد `document.readyState` درست پیش از `DOMContentLoaded` `interactive` میشود. این دو درواقع همان معنی را میدهند.
+- رویداد `document.readyState` زمانی کامل میشود که همه‌ی منابع (`iframe` و `img`) لود شده باشند. اینجا میتوانیم ببینیم که این اتفاق تقریبا همزمان با `img.onload` رخ میدهد (`img` آخرین منبع است) و `window.onload`. سووییچ به وضعیت `complete` هم معنی با `window.onload` است. تفاوت در این است که `window.onload` همیشه پس از دیگر هندلرهای `load` کار میکند.
 
 
 ## خلاصه
@@ -296,8 +295,8 @@ document.addEventListener('readystatechange', () => console.log(document.readySt
   - تصاویر و دیگر منابع هم ممکن است همچنان درحال لود باشند
 - رویداد `load` زمانی که صفحه و همه‌ی منابع لود شده باشند اجرا میشود. ما به ندرت از این ایونت استفاده میکنیم چون معمولا نیازی به اینکه مدتی طولانی منتظر بمانیم نیست.
 - رویداد `beforeunload` زمانی برروی `window` اجرا میشود که کاربر بخواهد صفحه را ترک کند. اگر ما رویداد را لغو کنیم مرورگر از یوزر میپرسد که آیا واقعا قصد خروج دارد یا نه (برای مثال زمانی که ما تغییرات ذخیره نشده داریم).
-- The `unload` event on `window` triggers when the user is finally leaving, in the handler we can only do simple things that do not involve delays or asking a user. Because of that limitation, it's rarely used. We can send out a network request with `navigator.sendBeacon`.
-- `document.readyState` is the current state of the document, changes can be tracked in the `readystatechange` event:
-  - `loading` -- the document is loading.
-  - `interactive` -- the document is parsed, happens at about the same time as `DOMContentLoaded`, but before it.
-  - `complete` -- the document and resources are loaded, happens at about the same time as `window.onload`, but before it.
+- رویداد `unload` برروی `window` زمانی اجرا میشود که کاربر درحال خروج از صفحه باشد. در هندلر ما میتوانیم کارهای ساده‌ای که شامل تاخیر یا پرسش از کاربر نباشند را انجام دهیم. به دلیل این محدودیت این رویداد به ندرت استفاده میشود. ما میتوانیم یک ریکوئست را با استفاده از `navigator.sendBeacon` به بیرون ارسال کنیم.
+- رویداد `document.readyState` وضعیت کنونی داکیومنت میباشد. تغییرات میتوانند در رویداد `readystatechange` رهگیری شوند:
+  - `loading` -- داکیومنت درحال لود شدن میباشد.
+  - `interactive` -- داکیومنت parse شده. این رویداد پیش از رویداد `DOMContentLoaded` و تقریبا همزمان با آن اتفاق می‌افتد.
+  - `complete` -- داکیومنت و منابع لود شده‌اند. این رویداد تقریبا همزمان با `window.onload` اما پیش از آن اتفاق می‌افتد.
